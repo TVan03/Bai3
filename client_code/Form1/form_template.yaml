@@ -1,9 +1,21 @@
 is_package: true
 container:
   type: HtmlTemplate
-  properties: {html: '@theme:standard-page.html'}
+  properties: {html: '@theme:standard-page.html', visible: true}
 components:
-- type: FlowPanel
+- name: label_3
   properties: {}
-  name: navbar_links
+  type: Label
+  layout_properties: {slot: left-nav}
+- name: button_1
+  properties: {text: button_1}
+  type: Button
   layout_properties: {slot: nav-right}
+- name: label_2
+  properties: {visible: false}
+  type: Label
+  layout_properties: {slot: title}
+- name: button_2
+  properties: {text: button_2}
+  type: Button
+  layout_properties: {slot: default}
