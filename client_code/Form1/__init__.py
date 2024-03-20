@@ -1,72 +1,59 @@
-from ._anvil_designer import Form1Template
+from _anvil_designer import Form1Template
 from anvil import *
-import random
-from ..Form2 import bubble_sort
-from ..Form2 import selection_sort
-from ..Form2 import insertion_sort
-from ..Form2 import quick_sort
-from ..Form2 import merge_sort
+
 class Form1(Form1Template):
-  def __init__(self, **properties):
-    # Set Form properties and Data Bindings.
-    self.init_components(**properties)
-    self.drop_down_1.items = [
-            ("                              "),
-            ("SẮP XẾP NỔI BỌT", "bubble_sort"),
-            ("SẮP XẾP CHỌN", "selection_sort"),
-            ("SẮP XẾP CHÈN", "insertion_sort"),
-            ("SẮP XẾP NHANH", "quick_sort"),
-            ("SẮP XẾP TRỘN", "merge_sort"),]
-   
-    self.drop_down_2.items = [
-            ("                              "),
-            ("SẮP XẾP NỔI BỌT", "bubble_sort"),
-            ("SẮP XẾP CHỌN", "selection_sort"),
-            ("SẮP XẾP CHÈN", "insertion_sort"),
-            ("SẮP XẾP NHANH", "quick_sort"),
-            ("SẮP XẾP TRỘN", "merge_sort"),]
-  # Hàm tạo dãy số ngẫu nhiên
-  def button_1_click(self, **event_args):
-    SoLuong_PT = int(self.text_area_SoLuongPT.text)
-    self.DaySo = random.sample(range(1, 101), SoLuong_PT);
-    self.label_4.text = ( ", ".join(map(str,self.DaySo)))
+    def __init__(self, **properties):
+        # Set Form properties and Data Bindings.
+        self.init_components(**properties)
 
-  # Hàm sắp xếp dãy số
-  def button_2_click(self, **event_args):
-     # Lấy thuật toán được chọn từ menu Dropdown
-    luaChon = self.drop_down_1.selected_value
-    # Lấy dãy số từ ô dãy số random
-    self.DaySo = [int(x) for x in self.label_4.text.split(", ")]
-    if luaChon == "bubble_sort":
-            self.DaySo = bubble_sort(self.DaySo)
-    elif luaChon == "selection_sort":
-            self.DaySo = selection_sort(self.DaySo)
-    elif luaChon == "insertion_sort":
-            self.DaySo = insertion_sort(self.DaySo)
-    elif luaChon == "quick_sort":
-            self.DaySo = quick_sort(self.DaySo)
-    elif luaChon == "merge_sort":
-            self.DaySo = merge_sort(self.DaySo)
-     
-    self.label_6.text = ", ".join(map(str, self.DaySo))
+    def merge_sort(self, arr):
+        if len(arr) > 1:
+            mid = len(arr) // 2
+            left_half = arr[:mid]
+            right_half = arr[mid:]
 
-  def button_3_click(self, **event_args):
-    self.array = self.text_area_DaySo.text
-    self.label_5.text = ( "".join(map(str, self.array)))
-  def button_4_click(self, **event_args):
-    # Lấy thuật toán được chọn từ menu Dropdown
-    luaChon2 = self.drop_down_2.selected_value
-    # Lấy dãy số từ ô nhập dãy số
-    self.array= [int(x) for x in self.label_5.text.split(", ")]
-    if luaChon2 == "bubble_sort":
-            self.array = bubble_sort(self.array)
-    elif luaChon2 == "selection_sort":
-            self.array = selection_sort(self.array)
-    elif luaChon2 == "insertion_sort":
-            self.array = insertion_sort(self.array)
-    elif luaChon2 == "quick_sort":
-            self.array = quick_sort(self.array)
-    elif luaChon2 == "merge_sort":
-            self.array = merge_sort(self.array)
-     
-    self.label_DaySoSX.text = ", ".join(map(str, self.array))
+            self.merge_sort(left_half)
+            self.merge_sort(right_half)
+
+            i = j = k = 0
+
+            while i < len(left_half) and j < len(right_half):
+                if left_half[i] < right_half[j]:
+                    arr[k] = left_half[i]
+                    i += 1
+                else:
+                    arr[k] = right_half[j]
+                    j += 1
+                k += 1
+
+            while i < len(left_half):
+                arr[k] = left_half[i]
+                i += 1
+                k += 1
+
+            while j < len(right_half):
+                arr[k] = right_half[j]
+                j += 1
+                k += 1
+
+    def Xep_click(self, **event_args):
+        try:
+            # Nhập dãy số nguyên từ người dùng và chuyển đổi thành list
+            arr = [int(num.strip()) for num in self.NhapN.text.split(',')]
+
+            # Thực hiện sắp xếp dãy số nguyên bằng thuật toán Merge Sort
+            self.merge_sort(arr)
+
+            # Hiển thị kết quả sắp xếp
+            self.Ketqua.text = ', '.join(map(str, arr))
+        except ValueError:
+            # Xử lý nếu người dùng nhập không đúng định dạng số nguyên
+            self.Ketqua.text = "Vui lòng nhập các số nguyên cách nhau bằng dấu phẩy"
+
+    def NhapN_pressed_enter(self, **event_args):
+        # Gọi sự kiện khi người dùng nhấn Enter trong ô nhập dãy số nguyên
+        self.Xep_click()
+
+    def Ketqua_pressed_enter(self, **event_args):
+        # Gọi sự kiện khi người dùng nhấn Enter trong ô kết quả
+        self.Xep_click()
